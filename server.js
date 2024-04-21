@@ -13,13 +13,22 @@ import { logout } from './controllers/authController.js';
 import Review from './models/Review.js';
 import { authMiddleware } from './middlewares/authMiddleware.js';
 import { getUserProfile, getProfileComments, submitProfileComment, followManga, favoriteManga, readingManga } from './controllers/userController.js';
-
+import connectMongo from 'connect-mongo';
 const app = express();
 const upload = multer({ dest: 'uploads/' });
 
 // Middleware
 app.use(express.json());
-const allowedOrigins = ['http://localhost:3000', 'https://main--lorelibrary.netlify.app', 'https://lorelibraryserver.onrender.com','https://consumet-api-z0sh.onrender.com', 'https://consumet-api-z0sh.onrender.com/meta/anilist/' ]; // Add your React app's origin(s) here
+const allowedOrigins = ['https://main--lorelibrary.netlify.app', 'https://lorelibraryserver.onrender.com','https://consumet-api-z0sh.onrender.com', 'https://consumet-api-z0sh.onrender.com/meta/anilist/' ]; // Add your React app's origin(s) here
+
+const MongoStore = connectMongo.create({
+  mongoUrl: 'mongodb+srv://20bhayward:LoreMaster@lorelibrarydata.tbi2ztc.mongodb.net/?retryWrites=true&w=majority&appName=LoreLibraryData',
+  mongoOptions: {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  },
+  ttl: 14 * 24 * 60 * 60, // Session expiration time (14 days)
+});
 
 app.use(cors({
   origin: function(origin, callback) {
@@ -31,16 +40,27 @@ app.use(cors({
   },
   credentials: true,
 }));
-app.use(session({
-  secret: 'lore-master-reads-no-lore',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: process.env.NODE_ENV === 'production',
-    maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
-  },
-}));
-
+// app.use(session({
+//   secret: 'lore-master-reads-no-lore',
+//   resave: false,
+//   saveUninitialized: false,
+//   cookie: {
+//     secure: process.env.NODE_ENV === 'production',
+//     maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+//   },
+// }));
+app.use(
+  session({
+    secret: 'lore-master-reads-no-lore',
+    resave: false,
+    saveUninitialized: true,
+    store: new MongoStore(),
+    cookie: {
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+    },
+  })
+);
 // Connect to MongoDB
 mongoose.connect('mongodb+srv://20bhayward:LoreMaster@lorelibrarydata.tbi2ztc.mongodb.net/?retryWrites=true&w=majority&appName=LoreLibraryData', {
   useNewUrlParser: true,
