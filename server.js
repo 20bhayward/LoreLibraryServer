@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import session from 'express-session';
+import mongoStore from 'connect-mongo';
 import cors from 'cors';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
@@ -19,7 +20,7 @@ const upload = multer({ dest: 'uploads/' });
 
 // Middleware
 app.use(express.json());
-const allowedOrigins = ['http://localhost:3000', 'https://main--lorelibrary.netlify.app', 'https://lore-library-server-62fd6c0714e1.herokuapp.com/','https://consumet-api-z0sh.onrender.com', 'https://consumet-api-z0sh.onrender.com/meta/anilist/' ]; 
+const allowedOrigins = ['http://localhost:3000', 'https://main--lorelibrary.netlify.app', 'https://lore-library-server-62fd6c0714e1.herokuapp.com/', 'https://consumet-api-z0sh.onrender.com', 'https://consumet-api-z0sh.onrender.com/meta/anilist/'];
 
 app.use(cors({
   origin: function(origin, callback) {
@@ -31,15 +32,28 @@ app.use(cors({
   },
   credentials: true,
 }));
-app.use(session({
-  secret: 'lore-master-reads-no-lore',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: process.env.NODE_ENV === 'production',
-    maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+
+const MongoStore = mongoStore.create({
+  mongoUrl: process.env.MONGODB_URI,
+  mongoOptions: {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
   },
-}));
+  ttl: 14 * 24 * 60 * 60, // Session expiration time (14 days)
+});
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    store: MongoStore,
+    cookie: {
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+    },
+  })
+);
 
 // Connect to MongoDB
 mongoose.connect('mongodb+srv://20bhayward:LoreMaster@lorelibrarydata.tbi2ztc.mongodb.net/?retryWrites=true&w=majority&appName=LoreLibraryData', {
