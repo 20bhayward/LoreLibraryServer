@@ -79,7 +79,7 @@ app.get('/api/users/profile', verifyToken, getUserProfile);
 app.post('/api/users/profile/picture', upload.single('profilePicture'), async (req, res) => {
   try {
     // Handle the uploaded file and update the user's profile picture
-    const userId = req.session.currentUser.uniqueId;
+    const userId = req.userId;
     const filePath = req.file.path;
 
     // Update the user's profile picture in the database
