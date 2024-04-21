@@ -19,7 +19,7 @@ const upload = multer({ dest: 'uploads/' });
 
 // Middleware
 app.use(express.json());
-const allowedOrigins = ['http://localhost:3000', 'https://lorelibrary.netlify.app/','https://consumet-api-z0sh.onrender.com','https://consumet-api-z0sh.onrender.com/meta/anilist/popular?provider=mangareader', 'https://consumet-api-z0sh.onrender.com/meta/anilist/' ]; // Add your React app's origin(s) here
+const allowedOrigins = ['http://localhost:3000', 'https://lorelibrary.netlify.app/','https://consumet-api-z0sh.onrender.com', 'https://consumet-api-z0sh.onrender.com/meta/anilist/' ]; // Add your React app's origin(s) here
 
 app.use(cors({
   origin: function(origin, callback) {
@@ -42,7 +42,7 @@ app.use(session({
 }));
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/', {
+mongoose.connect('mongodb+srv://20bhayward:LoreMaster@lorelibrarydata.tbi2ztc.mongodb.net/', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
