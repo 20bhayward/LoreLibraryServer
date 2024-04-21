@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 import mongoose from 'mongoose';
 
@@ -27,17 +28,18 @@ export const register = async (req, res) => {
     });
     await newUser.save();
 
-    req.session.currentUser = {
-      userId: newUser._id.toString(),
-      username: newUser.username,
-      role: newUser.role,
-      profilePicture: newUser.profilePicture || '',
-      uniqueId: newUser.uniqueId,
-    };
+    const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET);
 
     res.status(201).json({
       message: 'User registered successfully',
-      user: req.session.currentUser,
+      user: {
+        userId: newUser._id.toString(),
+        username: newUser.username,
+        role: newUser.role,
+        profilePicture: newUser.profilePicture || '',
+        uniqueId: newUser.uniqueId,
+      },
+      token,
     });
   } catch (error) {
     console.error('Error during registration:', error);
@@ -58,21 +60,22 @@ export const login = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({ message: 'Incorrect username or password' });
     }
+
     if (isPasswordValid) {
       const { _id, username, role, profilePicture } = user;
 
-      req.session.currentUser = {
-        userId: _id.toString(),
-        username,
-        role,
-        profilePicture,
-        uniqueId: user.uniqueId,
-      };
+      const token = jwt.sign({ userId: _id }, process.env.JWT_SECRET);
 
       res.json({
         message: 'Login successful',
-        user: req.session.currentUser,
-        refreshPage: true,
+        user: {
+          userId: _id.toString(),
+          username,
+          role,
+          profilePicture,
+          uniqueId: user.uniqueId,
+        },
+        token,
       });
     }
   } catch (error) {
@@ -90,4 +93,4 @@ export const logout = (req, res) => {
     res.clearCookie('connect.sid'); // Clear the session cookie
     res.json({ message: 'Logout successful' });
   });
-}; 
+};

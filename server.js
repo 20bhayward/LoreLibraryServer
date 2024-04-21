@@ -2,9 +2,10 @@ import express from 'express';
 import mongoose from 'mongoose';
 import session from 'express-session';
 import cors from 'cors';
+import jwt from 'jsonwebtoken';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
-import mangaRoutes from './routes/mangaRoutes.js'; // Import manga routes
+import mangaRoutes from './routes/mangaRoutes.js';
 import bcrypt from 'bcrypt';
 import User from './models/User.js';
 import multer from 'multer';
@@ -19,10 +20,26 @@ const upload = multer({ dest: 'uploads/' });
 
 // Middleware
 app.use(express.json());
-const allowedOrigins = ['http://localhost:3000', 'https://main--lorelibrary.netlify.app/', 'https://lorelibraryserver.onrender.com','https://lorelibraryserver.onrender.com/api','https://consumet-api-z0sh.onrender.com', 'https://consumet-api-z0sh.onrender.com/meta/anilist/' ]; // Add your React app's origin(s) here
+const allowedOrigins = ['http://localhost:3000', 'https://main--lorelibrary.netlify.app/', 'https://lorelibraryserver.onrender.com', 'https://lorelibraryserver.onrender.com/api', 'https://consumet-api-z0sh.onrender.com', 'https://consumet-api-z0sh.onrender.com/meta/anilist/'];
+
+// Middleware to verify the token
+const verifyToken = (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) {
+    return res.status(401).json({ message: 'No token provided' });
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ message: 'Invalid token' });
+    }
+    req.userId = decoded.userId;
+    next();
+  });
+};
 
 app.use(cors({
-  origin: function(origin, callback) {
+  origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -31,6 +48,7 @@ app.use(cors({
   },
   credentials: true,
 }));
+
 app.use(session({
   secret: process.env.SECRET_KEY,
   resave: false,
@@ -42,7 +60,7 @@ app.use(session({
 }));
 
 // Connect to MongoDB
-mongoose.connect('mongodb+srv://20bhayward:LoreMaster@lorelibrarydata.tbi2ztc.mongodb.net/?retryWrites=true&w=majority&appName=LoreLibraryData', {
+mongoose.connect('mongodb+srv://20bhayward:LoreMaster@lorelibrarydata.tbi2ztc.mongodb.net/', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -53,9 +71,9 @@ app.post('/api/auth/logout', logout);
 app.use('/api/users', userRoutes);
 app.use('/uploads', express.static(path.join(path.resolve(), 'uploads')));
 app.use('/uploads/profile-pictures', express.static(path.join(path.resolve(), 'uploads', 'profile-pictures')));
-app.use('/api/manga', mangaRoutes); // Use manga routes
+app.use('/api/manga', mangaRoutes);
 
-app.get('/api/users/profile', authMiddleware, getUserProfile);
+app.get('/api/users/profile', verifyToken, getUserProfile);
 
 // Route for profile picture upload
 app.post('/api/users/profile/picture', upload.single('profilePicture'), async (req, res) => {
@@ -104,8 +122,10 @@ app.get('/api/users/profile/:uniqueId', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
 app.get('/api/users/profile/:uniqueId/comments', getProfileComments);
 app.post('/api/users/profile/:uniqueId/comments', submitProfileComment);
+
 // Fetch reviews
 app.get('/api/manga/:mangaId/reviews', async (req, res) => {
   try {
