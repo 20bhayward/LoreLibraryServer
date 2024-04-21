@@ -21,7 +21,7 @@ const upload = multer({ dest: 'uploads/' });
 app.use(express.json());
 const allowedOrigins = ['https://main--lorelibrary.netlify.app', 'https://lorelibraryserver.onrender.com','https://consumet-api-z0sh.onrender.com', 'https://consumet-api-z0sh.onrender.com/meta/anilist/' ]; // Add your React app's origin(s) here
 
-const MongoStore = connectMongo.create({
+const MongoStore = mongoStore.create({
   mongoUrl: 'mongodb+srv://20bhayward:LoreMaster@lorelibrarydata.tbi2ztc.mongodb.net/?retryWrites=true&w=majority&appName=LoreLibraryData',
   mongoOptions: {
     useNewUrlParser: true,
@@ -54,7 +54,7 @@ app.use(
     secret: 'lore-master-reads-no-lore',
     resave: false,
     saveUninitialized: true,
-    store: new MongoStore(),
+    store: MongoStore,
     cookie: {
       secure: process.env.NODE_ENV === 'production',
       maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
