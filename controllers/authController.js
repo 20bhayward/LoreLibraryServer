@@ -1,5 +1,4 @@
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 import mongoose from 'mongoose';
 
@@ -28,18 +27,17 @@ export const register = async (req, res) => {
     });
     await newUser.save();
 
-    const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET);
+    req.session.currentUser = {
+      userId: newUser._id.toString(),
+      username: newUser.username,
+      role: newUser.role,
+      profilePicture: newUser.profilePicture || '',
+      uniqueId: newUser.uniqueId,
+    };
 
     res.status(201).json({
       message: 'User registered successfully',
-      user: {
-        userId: newUser._id.toString(),
-        username: newUser.username,
-        role: newUser.role,
-        profilePicture: newUser.profilePicture || '',
-        uniqueId: newUser.uniqueId,
-      },
-      token,
+      user: req.session.currentUser,
     });
   } catch (error) {
     console.error('Error during registration:', error);
@@ -60,22 +58,21 @@ export const login = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({ message: 'Incorrect username or password' });
     }
-
     if (isPasswordValid) {
       const { _id, username, role, profilePicture } = user;
 
-      const token = jwt.sign({ userId: _id }, process.env.JWT_SECRET);
+      req.session.currentUser = {
+        userId: _id.toString(),
+        username,
+        role,
+        profilePicture,
+        uniqueId: user.uniqueId,
+      };
 
       res.json({
         message: 'Login successful',
-        user: {
-          userId: _id.toString(),
-          username,
-          role,
-          profilePicture,
-          uniqueId: user.uniqueId,
-        },
-        token,
+        user: req.session.currentUser,
+        refreshPage: true,
       });
     }
   } catch (error) {
@@ -85,5 +82,12 @@ export const login = async (req, res) => {
 };
 
 export const logout = (req, res) => {
-  res.json({ message: 'Logout successful' });
-};
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Error destroying session:', err);
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+    res.clearCookie('connect.sid'); // Clear the session cookie
+    res.json({ message: 'Logout successful' });
+  });
+}; 

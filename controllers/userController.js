@@ -34,7 +34,7 @@ export const getUserProfile = async (req, res) => {
 
 export const changePassword = async (req, res) => {
   const { currentPassword, newPassword } = req.body;
-  const userId = req.userId;
+  const userId = req.session.currentUser.userId;
 
   try {
     const user = await User.findById(userId);
