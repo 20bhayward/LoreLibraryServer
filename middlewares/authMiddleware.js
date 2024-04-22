@@ -24,7 +24,7 @@ export const authMiddleware = async (req, res, next) => {
       return res.status(401).json({ message: 'Authentication failed: User not found' });
     }
 
-    // Add the user object to the request
+    // Add the user object and id to the request
     req._id = user._id;
     req.user = user;
     next();
