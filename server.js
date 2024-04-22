@@ -6,6 +6,7 @@ import userRoutes from './routes/userRoutes.js';
 import mangaRoutes from './routes/mangaRoutes.js';
 import multer from 'multer';
 import path from 'path';
+import axios from 'axios';
 import "dotenv/config";
 
 const app = express();
