@@ -24,15 +24,17 @@ export const register = async (req, res) => {
       password: hashedPassword,
       role,
     });
-    await newUser.save();
-
+    const savedUser = await newUser.save();
+    console.log(savedUser._id);
     req.session.currentUser = {
-      _id: newUser._id,
-      username: newUser.username,
-      role: newUser.role,
-      profilePicture: newUser.profilePicture || '',
+      _id: savedUser._id,
+      username: savedUser.username,
+      role: savedUser.role,
+      profilePicture: savedUser.profilePicture || '',
     };
-
+    if (!req.session) {
+      return res.status(500).json({ message: 'Session not available' });
+    }
     res.status(201).json({
       message: 'User registered successfully',
       user: req.session.currentUser,
@@ -57,15 +59,15 @@ export const login = async (req, res) => {
       return res.status(401).json({ message: 'Incorrect username or password' });
     }
     if (isPasswordValid) {
-      const { _id, username, role, profilePicture } = user;
-
       req.session.currentUser = {
-        _id,
-        username,
-        role,
-        profilePicture,
+        _id: user._id,
+        username: user.username,
+        role: user.role,
+        profilePicture: user.profilePicture,
       };
-
+      if (!req.session) {
+        return res.status(500).json({ message: 'Session not available' });
+      }
       res.json({
         message: 'Login successful',
         user: req.session.currentUser,

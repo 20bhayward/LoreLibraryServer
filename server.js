@@ -12,6 +12,7 @@ import { logout } from './controllers/authController.js';
 import { authMiddleware } from './middlewares/authMiddleware.js';
 import { getUserProfile, getProfileComments, submitProfileComment, followManga, favoriteManga, readingManga, getUserManga } from './controllers/userController.js';
 import "dotenv/config";
+
 const app = express();
 const upload = multer({ dest: 'uploads/' });
 // Set withCredentials to true for all requests
@@ -40,18 +41,16 @@ const sessionOptions = {
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    secure: process.env.NODE_ENV === 'production', // Ensure cookies are only sent over HTTPS
+    sameSite: 'none', // Necessary for cross-origin use with secure cookies
+    domain: process.env.HTTP_SERVER_DOMAIN ? new URL(process.env.HTTP_SERVER_DOMAIN).hostname : undefined,
     maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
   },
+  proxy: process.env.NODE_ENV === 'production' // Trust the proxy in production for secure cookies
 };
-
 if (process.env.NODE_ENV !== "development") {
-  sessionOptions.proxy = true;
-  sessionOptions.cookie = {
-    sameSite: "none",
-    domain: process.env.HTTP_SERVER_DOMAIN,
-  };
+  sessionOptions.cookie.secure = true; // Ensure cookies are only sent over HTTPS
+  sessionOptions.proxy = true; // Trust the load balancer in production
 }
 
 app.use(session(sessionOptions));
