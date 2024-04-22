@@ -40,7 +40,7 @@ router.put('/:_id', authMiddleware, async (req, res) => {
         }
 
         const updatedAnnouncement = await Announcement.findByIdAndUpdate(
-            req.params.id,
+            req.params._id,
             { ...req.body, updatedAt: Date.now() },
             { new: true }
         );
@@ -63,7 +63,7 @@ router.delete('/:_id', authMiddleware, async (req, res) => {
             return res.status(403).json({ message: 'Forbidden' });
         }
 
-        const deletedAnnouncement = await Announcement.findByIdAndDelete(req.params.id);
+        const deletedAnnouncement = await Announcement.findByIdAndDelete(req.params._id);
 
         if (!deletedAnnouncement) {
             return res.status(404).json({ message: 'Announcement not found' });
