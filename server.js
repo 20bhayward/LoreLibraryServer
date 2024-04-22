@@ -7,6 +7,7 @@ import userRoutes from './routes/userRoutes.js';
 import mangaRoutes from './routes/mangaRoutes.js';
 import multer from 'multer';
 import path from 'path';
+import axios from 'axios';
 import { logout } from './controllers/authController.js';
 import { authMiddleware } from './middlewares/authMiddleware.js';
 import { getUserProfile, getProfileComments, submitProfileComment, followManga, favoriteManga, readingManga, getUserManga } from './controllers/userController.js';
@@ -15,7 +16,6 @@ const app = express();
 const upload = multer({ dest: 'uploads/' });
 // Set withCredentials to true for all requests
 axios.defaults.withCredentials = true;
-
 // Middleware
 const allowedOrigins = ['http://localhost:3000', 'https://main--lorelibrary.netlify.app/', 'https://lorelibraryserver.onrender.com', 'https://consumet-api-z0sh.onrender.com', 'https://consumet-api-z0sh.onrender.com/meta/anilist/popular?provider=mangareader', 'https://consumet-api-z0sh.onrender.com/meta/anilist/'];
 
@@ -41,6 +41,7 @@ const sessionOptions = {
   saveUninitialized: false,
   cookie: {
     secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
   },
 };
