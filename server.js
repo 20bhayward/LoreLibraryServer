@@ -11,7 +11,7 @@ import axios from 'axios';
 import { logout } from './controllers/authController.js';
 import { authMiddleware } from './middlewares/authMiddleware.js';
 import { getUserProfile, getProfileComments, submitProfileComment, followManga, favoriteManga, readingManga, getUserManga } from './controllers/userController.js';
-
+import "dotenv/config";
 const app = express();
 const upload = multer({ dest: 'uploads/' });
 // Set withCredentials to true for all requests
