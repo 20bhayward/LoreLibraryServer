@@ -28,7 +28,7 @@ export const register = async (req, res) => {
     await newUser.save();
 
     req.session.currentUser = {
-      userId: newUser._id.toString(),
+      userId: newUser._id,
       username: newUser.username,
       role: newUser.role,
       profilePicture: newUser.profilePicture || '',
@@ -38,7 +38,7 @@ export const register = async (req, res) => {
     res.status(201).json({
       message: 'User registered successfully',
       user: {
-        userId: newUser._id,
+        userId: newUser._id.toString(),
         username: newUser.username,
         role: newUser.role,
         profilePicture: newUser.profilePicture || '',
@@ -68,7 +68,7 @@ export const login = async (req, res) => {
       const { _id, username, role, profilePicture } = user;
 
       req.session.currentUser = {
-        userId: _id.toString(),
+        userId: _id,
         username,
         role,
         profilePicture,
@@ -78,7 +78,7 @@ export const login = async (req, res) => {
       res.json({
         message: 'Login successful',
         user: {
-          userId: _id,
+          userId: _id.toString(),
           username,
           role,
           profilePicture: user.profilePicture,
