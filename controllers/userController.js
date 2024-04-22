@@ -204,8 +204,8 @@ export const submitProfileComment = async (req, res) => {
 
 export const getUserManga = async (req, res) => {
   try {
-    const { _id } = req.params;
-    const user = await User.findById(_id).populate('followedManga favoriteManga readingManga');
+    const userId = req.user._id;
+    const user = await User.findById(userId).populate('followedManga favoriteManga readingManga');
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
