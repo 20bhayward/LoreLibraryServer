@@ -1,16 +1,11 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import session from 'express-session';
 import cors from 'cors';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import mangaRoutes from './routes/mangaRoutes.js';
 import multer from 'multer';
 import path from 'path';
-import axios from 'axios';
-import { logout } from './controllers/authController.js';
-import { authMiddleware } from './middlewares/authMiddleware.js';
-import { getUserProfile, getProfileComments, submitProfileComment, followManga, favoriteManga, readingManga, getUserManga } from './controllers/userController.js';
 import "dotenv/config";
 
 const app = express();
@@ -29,6 +24,7 @@ const allowedOrigins = [
 ];
 // Connect to MongoDB
 mongoose.connect(process.env.DB_CONNECTION_STRING || 'mongodb+srv://20bhayward:LoreMaster@lorelibrarydata.tbi2ztc.mongodb.net/');
+
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -50,62 +46,6 @@ app.use('/api/users', userRoutes);
 app.use('/uploads', express.static(path.join(path.resolve(), 'uploads')));
 app.use('/uploads/profile-pictures', express.static(path.join(path.resolve(), 'uploads', 'profile-pictures')));
 app.use('/api/manga', mangaRoutes);
-
-app.get('/api/users/profile', authMiddleware, getUserProfile);
-
-// Route for profile picture upload
-app.post('/api/users/profile/picture', authMiddleware, upload.single('profilePicture'), async (req, res) => {
-  try {
-    const userId = req.session.currentUser._id;
-    const filePath = req.file.path;
-
-    await User.findByIdAndUpdate(userId, { profilePicture: filePath });
-
-    res.status(200).json({ message: 'Profile picture uploaded successfully' });
-  } catch (error) {
-    console.error('Error uploading profile picture:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
-});
-
-app.get('/api/users/profile/:_id', async (req, res) => {
-  try {
-    const { _id } = req.params;
-    const user = await User.findById({ _id })
-      .select('username profilePicture firstName lastName gender location')
-      .populate('followedManga favoriteManga readingManga')
-      .exec();
-
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    const publicProfile = {
-      username: user.username,
-      profilePicture: user.profilePicture,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      gender: user.gender,
-      location: user.location,
-      followedManga: user.followedManga,
-      favoriteManga: user.favoriteManga,
-      readingManga: user.readingManga,
-    };
-
-    res.json(publicProfile);
-  } catch (error) {
-    console.error('Error fetching public profile:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
-});
-
-app.get('/api/users/:_id/manga', authMiddleware, getUserManga);
-app.post('/api/users/:_id/follow/:mangaId', authMiddleware, followManga);
-app.post('/api/users/:_id/favorite/:mangaId', authMiddleware, favoriteManga);
-app.post('/api/users/:_id/reading/:mangaId', authMiddleware, readingManga);
-
-app.get('/api/users/profile/:_id/comments', getProfileComments);
-app.post('/api/users/profile/:_id/comments', submitProfileComment);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
