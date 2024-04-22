@@ -5,13 +5,17 @@ export const authMiddleware = async (req, res, next) => {
   try {
     // Get the token from the request headers
     const token = req.headers.authorization?.split(' ')[1];
+    console.log('Received token:', token); // Add this logging statement
 
     if (!token) {
       return res.status(401).json({ message: 'Authentication failed: No token provided' });
     }
 
     // Verify the token
+    console.log('JWT_SECRET:', process.env.JWT_SECRET); // Add this logging statement
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log('Decoded token:', decoded); // Add this logging statement
+
     const userId = decoded.userId;
 
     // Find the user by ID

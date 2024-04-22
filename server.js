@@ -12,8 +12,6 @@ import { logout } from './controllers/authController.js';
 import { authMiddleware } from './middlewares/authMiddleware.js';
 import { getUserProfile, getProfileComments, submitProfileComment, followManga, favoriteManga, readingManga, getUserManga } from './controllers/userController.js';
 import "dotenv/config";
-import connectMongo from 'connect-mongo';
-
 
 const app = express();
 const upload = multer({ dest: 'uploads/' });
@@ -24,7 +22,6 @@ const allowedOrigins = ['http://localhost:3000','http://localhost:5000', 'https:
 
 // Connect to MongoDB
 mongoose.connect(process.env.DB_CONNECTION_STRING || 'mongodb+srv://20bhayward:LoreMaster@lorelibrarydata.tbi2ztc.mongodb.net/');
-
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -38,29 +35,11 @@ app.use(
   })
 );
 
-const sessionOptions = {
-  secret: process.env.SESSION_SECRET || 'your-secret-key',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    maxAge: 604800000, // 1 week
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-  },
-};
-
-if (process.env.NODE_ENV !== "development") {
-  sessionOptions.proxy = true;
-  sessionOptions.cookie.domain = process.env.HTTP_SERVER_DOMAIN;
-}
-
-app.use(session(sessionOptions));
 app.use(express.json());
 
 // Routes
 app.use('/api/auth', authRoutes);
-app.post('/api/auth/logout', logout);
-app.use('/api/users', authMiddleware, userRoutes);
+app.use('/api/users', userRoutes);
 app.use('/uploads', express.static(path.join(path.resolve(), 'uploads')));
 app.use('/uploads/profile-pictures', express.static(path.join(path.resolve(), 'uploads', 'profile-pictures')));
 app.use('/api/manga', mangaRoutes);
@@ -126,7 +105,6 @@ app.use((err, req, res, next) => {
   console.error('Error:', err);
   res.status(500).json({ message: 'Internal server error' });
 });
-
 // Start the server
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
