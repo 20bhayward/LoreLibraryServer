@@ -103,7 +103,7 @@ export const updateProfile = async (req, res) => {
 }; 
 export const followManga = async (req, res) => {
   try {
-    const userId = req.params._id;
+    const userId = req.user._id;
     const mangaId = req.params.mangaId;
 
     const user = await User.findById(userId);
@@ -127,7 +127,7 @@ export const followManga = async (req, res) => {
 
 export const favoriteManga = async (req, res) => {
   try {
-    const userId = req.params._id;
+    const userId = req.user._id;
     const mangaId = req.params.mangaId;
 
     const user = await User.findById(userId);
@@ -151,7 +151,7 @@ export const favoriteManga = async (req, res) => {
 
 export const readingManga = async (req, res) => {
   try {
-    const userId = req.params._id;
+    const userId = req.user._id;
     const mangaId = req.params.mangaId;
 
     const user = await User.findById(userId);
