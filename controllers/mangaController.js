@@ -91,19 +91,19 @@ export const getMangaDetails = async (req, res) => {
 };
 
 export const getFeaturedManga = async (req, res) => {
-  try {
-    const response = await axios.get(`https://consumet-api-z0sh.onrender.com/meta/anilist/popular?provider=mangareader`);
-    const results = response.data.results;
+    try {
+        const response = await axios.get(`https://consumet-api-z0sh.onrender.com/meta/anilist/popular?provider=mangareader`);
+        const results = response.data.results;
 
-    // Sort the results by popularity in descending order
-    const sortedResults = results.sort((a, b) => b.popularity - a.popularity);
+        // Sort the results by popularity in descending order
+        const sortedResults = results.sort((a, b) => b.popularity - a.popularity);
 
-    // Take the top 5 results
-    const featuredManga = sortedResults.slice(0, 5);
+        // Take the top 5 results
+        const featuredManga = sortedResults.slice(0, 5);
 
-    res.json(featuredManga);
-  } catch (error) {
-    console.error('Error fetching featured manga:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
+        res.json(featuredManga);
+    } catch (error) {
+        console.error('Error fetching featured manga:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 };
