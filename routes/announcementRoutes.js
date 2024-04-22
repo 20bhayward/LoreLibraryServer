@@ -1,7 +1,7 @@
 // routes/announcementRoutes.ts
 import express from 'express';
 import Announcement from '../models/Announcement.js';
-import { authMiddleware } from '../middlewares/authMiddleware';
+import { authMiddleware } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
