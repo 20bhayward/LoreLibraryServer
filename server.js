@@ -20,8 +20,7 @@ const allowedOrigins = [
   'https://lorelibraryserver.onrender.com',
   'https://consumet-api-z0sh.onrender.com',
   'https://consumet-api-z0sh.onrender.com/meta/anilist/popular?provider=mangareader',
-  'https://consumet-api-z0sh.onrender.com/meta/anilist/',
-  'https://your-render-app-url.onrender.com', // Replace with your Render app URL
+  'https://consumet-api-z0sh.onrender.com/meta/anilist/'
 ];
 
 // Connect to MongoDB
@@ -79,14 +78,6 @@ app.get('/api/users/profile/:_id', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-app.get('/api/users/:_id/manga', authMiddleware, getUserManga);
-app.post('/api/users/:_id/follow/:mangaId', authMiddleware, followManga);
-app.post('/api/users/:_id/favorite/:mangaId', authMiddleware, favoriteManga);
-app.post('/api/users/:_id/reading/:mangaId', authMiddleware, readingManga);
-
-app.get('/api/users/profile/:_id/comments', getProfileComments);
-app.post('/api/users/profile/:_id/comments', submitProfileComment);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
