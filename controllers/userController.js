@@ -16,7 +16,7 @@ export const getUserProfile = async (req, res) => {
     }
 
     res.json({
-      _id: user._id,
+      _id: user._id.toString(),
       username: user.username,
       role: user.role,
       profilePicture: user.profilePicture,

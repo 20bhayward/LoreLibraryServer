@@ -1,5 +1,7 @@
 export const authMiddleware = async (req, res, next) => {
   try {
+    console.log('req.session:', req.session);
+    console.log('req.session.currentUser:', req.session.currentUser);
     if (!req.session.currentUser || !req.session.currentUser._id) {
       return res.status(401).json({ message: 'Please log in to access this resource' });
     }

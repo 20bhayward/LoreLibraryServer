@@ -12,14 +12,14 @@ import { logout } from './controllers/authController.js';
 import { authMiddleware } from './middlewares/authMiddleware.js';
 import { getUserProfile, getProfileComments, submitProfileComment, followManga, favoriteManga, readingManga, getUserManga } from './controllers/userController.js';
 import "dotenv/config";
-import User from '../models/User.js';
+
 
 const app = express();
 const upload = multer({ dest: 'uploads/' });
 // Set withCredentials to true for all requests
 axios.defaults.withCredentials = true;
 // Middleware
-const allowedOrigins = ['http://localhost:3000', 'https://main--lorelibrary.netlify.app/', 'https://lorelibraryserver.onrender.com', 'https://consumet-api-z0sh.onrender.com', 'https://consumet-api-z0sh.onrender.com/meta/anilist/popular?provider=mangareader', 'https://consumet-api-z0sh.onrender.com/meta/anilist/'];
+const allowedOrigins = ['http://localhost:3000','http://localhost:5000', 'https://main--lorelibrary.netlify.app/', 'https://lorelibraryserver.onrender.com', 'https://consumet-api-z0sh.onrender.com', 'https://consumet-api-z0sh.onrender.com/meta/anilist/popular?provider=mangareader', 'https://consumet-api-z0sh.onrender.com/meta/anilist/'];
 
 // Connect to MongoDB
 mongoose.connect(process.env.DB_CONNECTION_STRING || 'mongodb+srv://20bhayward:LoreMaster@lorelibrarydata.tbi2ztc.mongodb.net/');
@@ -44,7 +44,7 @@ const sessionOptions = {
   cookie: {
     secure: process.env.NODE_ENV === 'production', // Ensure cookies are only sent over HTTPS
     sameSite: 'none', // Necessary for cross-origin use with secure cookies
-    domain: process.env.HTTP_SERVER_DOMAIN ? new URL(process.env.HTTP_SERVER_DOMAIN).hostname : undefined,
+    domain: process.env.HTTP_SERVER_DOMAIN,
     maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
   },
   proxy: process.env.NODE_ENV === 'production' // Trust the proxy in production for secure cookies
