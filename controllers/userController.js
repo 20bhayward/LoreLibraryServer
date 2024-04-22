@@ -168,6 +168,72 @@ export const readingManga = async (req, res) => {
   }
 };
 
+export const unFollowManga = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const mangaId = req.params.mangaId;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (!user.followedManga.includes(mangaId)) {
+      user.followedManga = user.followedManga.filter(e => e !== mangaId);
+      await user.save();
+    }
+
+    res.json({ message: 'Manga followed successfully' });
+  } catch (error) {
+    console.error('Error following manga:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+export const unFavoriteManga = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const mangaId = req.params.mangaId;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (!user.favoriteManga.includes(mangaId)) {
+      user.favoriteManga = user.favoriteManga.filter(e => e !== mangaId);
+      await user.save();
+    }
+
+    res.json({ message: 'Manga favorited successfully' });
+  } catch (error) {
+    console.error('Error favoriting manga:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+export const unReadingManga = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const mangaId = req.params.mangaId;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (!user.readingManga.includes(mangaId)) {
+      user.readingManga = user.readingManga.filter(e => e !== mangaId);
+      await user.save();
+    }
+
+    res.json({ message: 'Manga added to reading list' });
+  } catch (error) {
+    console.error('Error marking manga as reading:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 export const getProfileComments = async (req, res) => {
   try {
     const { _id } = req.params;
