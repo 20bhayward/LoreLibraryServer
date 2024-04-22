@@ -256,10 +256,9 @@ export const submitProfileComment = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
-
 export const getUserManga = async (req, res) => {
   try {
-    const userId = req.user._id;
+    const userId = req.params._id;
     const user = await User.findById(userId).populate('followedManga favoriteManga readingManga');
 
     if (!user) {
