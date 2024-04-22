@@ -2,7 +2,7 @@ import express from 'express';
 import { updateProfile, getUserProfile, changePassword, followManga, favoriteManga, readingManga, getProfileComments, submitProfileComment, getUserManga  } from '../controllers/userController.js';
 import { authMiddleware } from '../middlewares/authMiddleware.js';
 import multer from 'multer';
-
+import User from '../models/User.js';
 const upload = multer({ dest: 'uploads/' });
 const router = express.Router();
 

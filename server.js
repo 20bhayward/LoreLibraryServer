@@ -12,6 +12,7 @@ import { logout } from './controllers/authController.js';
 import { authMiddleware } from './middlewares/authMiddleware.js';
 import { getUserProfile, getProfileComments, submitProfileComment, followManga, favoriteManga, readingManga, getUserManga } from './controllers/userController.js';
 import "dotenv/config";
+import User from '../models/User.js';
 
 const app = express();
 const upload = multer({ dest: 'uploads/' });
@@ -59,7 +60,7 @@ app.use(express.json());
 // Routes
 app.use('/api/auth', authRoutes);
 app.post('/api/auth/logout', logout);
-app.use('/api/users', userRoutes);
+app.use('/api/users', authMiddleware, userRoutes);
 app.use('/uploads', express.static(path.join(path.resolve(), 'uploads')));
 app.use('/uploads/profile-pictures', express.static(path.join(path.resolve(), 'uploads', 'profile-pictures')));
 app.use('/api/manga', mangaRoutes);
