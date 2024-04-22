@@ -179,11 +179,11 @@ export const unFollowManga = async (req, res) => {
     }
 
     if (!user.followedManga.includes(mangaId)) {
-      user.followedManga = user.followedManga.filter(e => e !== mangaId);
+      user.followedManga = user.followedManga.filter(e => e.mangaId  !== mangaId);
       await user.save();
     }
 
-    res.json({ message: 'Manga followed successfully' });
+    res.json({ message: 'Manga unfollowed successfully' });
   } catch (error) {
     console.error('Error following manga:', error);
     res.status(500).json({ message: 'Internal server error' });
@@ -201,11 +201,11 @@ export const unFavoriteManga = async (req, res) => {
     }
 
     if (!user.favoriteManga.includes(mangaId)) {
-      user.favoriteManga = user.favoriteManga.filter(e => e !== mangaId);
+      user.favoriteManga = user.favoriteManga.filter(e => e.mangaId  !== mangaId);
       await user.save();
     }
 
-    res.json({ message: 'Manga favorited successfully' });
+    res.json({ message: 'Manga unfavorited successfully' });
   } catch (error) {
     console.error('Error favoriting manga:', error);
     res.status(500).json({ message: 'Internal server error' });
@@ -223,11 +223,11 @@ export const unReadingManga = async (req, res) => {
     }
 
     if (!user.readingManga.includes(mangaId)) {
-      user.readingManga = user.readingManga.filter(e => e !== mangaId);
+      user.readingManga = user.readingManga.filter(e => e.mangaId !== mangaId);
       await user.save();
     }
 
-    res.json({ message: 'Manga added to reading list' });
+    res.json({ message: 'Manga removed from reading list' });
   } catch (error) {
     console.error('Error marking manga as reading:', error);
     res.status(500).json({ message: 'Internal server error' });
