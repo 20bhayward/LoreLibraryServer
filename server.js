@@ -13,9 +13,11 @@ import { getUserProfile, getProfileComments, submitProfileComment, followManga, 
 
 const app = express();
 const upload = multer({ dest: 'uploads/' });
+// Set withCredentials to true for all requests
+axios.defaults.withCredentials = true;
 
 // Middleware
-const allowedOrigins = ['http://localhost:3000', 'https://main--lorelibrary.netlify.app/', 'https://lorelibraryserver.onrender.com', 'https://consumet-api-z0sh.onrender.com', 'https://consumet-api-z0sh.onrender.com/meta/anilist/'];
+const allowedOrigins = ['http://localhost:3000', 'https://main--lorelibrary.netlify.app/', 'https://lorelibraryserver.onrender.com', 'https://consumet-api-z0sh.onrender.com', 'https://consumet-api-z0sh.onrender.com/meta/anilist/popular?provider=mangareader', 'https://consumet-api-z0sh.onrender.com/meta/anilist/'];
 
 // Connect to MongoDB
 mongoose.connect(process.env.DB_CONNECTION_STRING || 'mongodb+srv://20bhayward:LoreMaster@lorelibrarydata.tbi2ztc.mongodb.net/');
