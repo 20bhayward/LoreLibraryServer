@@ -43,9 +43,9 @@ app.use(
 app.use(express.json());
 
 // Routes
+app.use('/api/announcements', announcementRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/announcements', announcementRoutes);
 app.use('/uploads', express.static(path.join(path.resolve(), 'uploads')));
 app.use('/uploads/profile-pictures', express.static(path.join(path.resolve(), 'uploads', 'profile-pictures')));
 app.use('/api/manga', mangaRoutes);
