@@ -5,6 +5,7 @@ import fs from 'fs';
 import Manga from '../models/Manga.js';
 import Comment from '../models/Comment.js';
 import mongoose from 'mongoose';
+import jwt from 'jsonwebtoken';
 
 const profilePicturesDir = path.join(path.resolve(), 'uploads', 'profile-pictures');
 
