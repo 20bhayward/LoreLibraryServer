@@ -7,7 +7,7 @@ import mangaRoutes from './routes/mangaRoutes.js';
 import multer from 'multer';
 import path from 'path';
 import "dotenv/config";
-import User from '../server/models/User.js'
+import User from './models/User.js'
 
 const app = express();
 const upload = multer({ dest: 'uploads/' });
