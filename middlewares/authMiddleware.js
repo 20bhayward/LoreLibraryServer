@@ -3,12 +3,12 @@ import User from '../models/User.js';
 export const authMiddleware = async (req, res, next) => {
   try {
     if (!req.session.currentUser || !req.session.currentUser.userId) {
-      return res.status(401).json({ message: 'Unauthorized' });
+      return res.status(401).json({ message: 'Unauthorized ID' });
     }
 
     const user = await User.findById(req.session.currentUser.userId);
     if (!user) {
-      return res.status(401).json({ message: 'Unauthorized' });
+      return res.status(401).json({ message: 'Unauthorized User' });
     }
 
     req.userId = user._id;
