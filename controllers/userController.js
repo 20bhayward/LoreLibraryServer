@@ -34,7 +34,7 @@ export const getUserProfile = async (req, res) => {
 
 export const changePassword = async (req, res) => {
   const { currentPassword, newPassword } = req.body;
-  const userId = req.session.currentUser._id;
+  const userId = req._id;
 
   try {
     const user = await User.findById(userId);
@@ -192,7 +192,7 @@ export const submitProfileComment = async (req, res) => {
       uniqueId: commenterUniqueId,
       username: commenterUsername,
       comment,
-      profileId: _id,
+      profileId: _id.toString(),
     });
     const savedComment = await newComment.save();
     res.status(201).json(savedComment);
