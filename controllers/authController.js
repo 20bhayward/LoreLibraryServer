@@ -72,7 +72,6 @@ export const login = async (req, res) => {
       res.json({
         message: 'Login successful',
         user: req.session.currentUser,
-        refreshPage: true,
       });
     }
   } catch (error) {
