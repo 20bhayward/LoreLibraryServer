@@ -89,10 +89,10 @@ app.post('/api/users/profile/picture', authMiddleware, upload.single('profilePic
   }
 });
 
-app.get('/api/users/profile/:uniqueId', async (req, res) => {
+app.get('/api/users/profile/:_id', async (req, res) => {
   try {
-    const { uniqueId } = req.params;
-    const user = await User.findOne({ uniqueId })
+    const { _id } = req.params;
+    const user = await User.findById({ _id })
       .select('username profilePicture firstName lastName gender location')
       .populate('followedManga favoriteManga readingManga')
       .exec();

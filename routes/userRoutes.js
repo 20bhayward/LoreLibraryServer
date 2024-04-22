@@ -13,7 +13,7 @@ router.get('/:_id/manga', authMiddleware, getUserManga);
 router.post('/:_id/follow/:mangaId', authMiddleware, followManga);
 router.post('/:_id/favorite/:mangaId', authMiddleware, favoriteManga);
 router.post('/:_id/reading/:mangaId', authMiddleware, readingManga);
-router.get('/profile/:uniqueId/comments', getProfileComments);
-router.post('/profile/:uniqueId/comments', submitProfileComment);
+router.get('/profile/:_id/comments', getProfileComments);
+router.post('/profile/:_id/comments', submitProfileComment);
 
 export default router;
