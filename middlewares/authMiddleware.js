@@ -1,21 +1,30 @@
+import jwt from 'jsonwebtoken';
+import User from '../models/User.js';
+
 export const authMiddleware = async (req, res, next) => {
   try {
-    console.log('req.session:', req.session);
-    console.log('req.session.currentUser:', req.session.currentUser);
-    if (!req.session.currentUser || !req.session.currentUser._id) {
-      return res.status(401).json({ message: 'Please log in to access this resource' });
+    // Get the token from the request headers
+    const token = req.headers.authorization?.split(' ')[1];
+
+    if (!token) {
+      return res.status(401).json({ message: 'Authentication failed: No token provided' });
     }
 
-    const user = await User.findById(req.session.currentUser._id);
+    // Verify the token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.userId;
+
+    // Find the user by ID
+    const user = await User.findById(userId);
     if (!user) {
-      return res.status(401).json({ message: 'User not found' });
+      return res.status(401).json({ message: 'Authentication failed: User not found' });
     }
 
-    req._id = user._id;
-    req.userRole = user.role;
+    // Add the user object to the request
+    req.user = user;
     next();
   } catch (error) {
     console.error('Error in authMiddleware:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(401).json({ message: 'Authentication failed' });
   }
 };

@@ -18,27 +18,19 @@ export const register = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-
     const newUser = new User({
       username,
       password: hashedPassword,
       role,
     });
     const savedUser = await newUser.save();
-    console.log(savedUser._id);
-    req.session.currentUser = {
-      _id: savedUser._id,
-      username: savedUser.username,
-      role: savedUser.role,
-      profilePicture: savedUser.profilePicture || '',
-    };
-    if (!req.session) {
-      return res.status(500).json({ message: 'Session not available' });
-    }
-    res.status(201).json({
-      message: 'User registered successfully',
-      user: req.session.currentUser,
+
+    // Generate a JWT token
+    const token = jwt.sign({ userId: savedUser._id }, process.env.JWT_SECRET, {
+      expiresIn: '7d',
     });
+
+    res.status(201).json({ message: 'User registered successfully', token, user: savedUser });
   } catch (error) {
     console.error('Error during registration:', error);
     res.status(500).json({ message: 'Server error' });
@@ -59,19 +51,12 @@ export const login = async (req, res) => {
       return res.status(401).json({ message: 'Incorrect username or password' });
     }
     if (isPasswordValid) {
-      req.session.currentUser = {
-        _id: user._id,
-        username: user.username,
-        role: user.role,
-        profilePicture: user.profilePicture,
-      };
-      if (!req.session) {
-        return res.status(500).json({ message: 'Session not available' });
-      }
-      res.json({
-        message: 'Login successful',
-        user: req.session.currentUser,
+      // Generate a JWT token
+      const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+        expiresIn: '7d',
       });
+
+      res.json({ token, user });
     }
   } catch (error) {
     console.error('Error during login:', error);

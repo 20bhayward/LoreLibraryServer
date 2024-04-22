@@ -1,7 +1,7 @@
 // mangaRoutes.js
 import express from 'express';
 import { getMangaDetails, getReviews, submitReview, getFeaturedManga } from '../controllers/mangaController.js';
-import User from '../models/User.js';
+
 const router = express.Router();
 
 router.get('/featured', getFeaturedManga);

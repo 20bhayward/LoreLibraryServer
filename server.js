@@ -12,6 +12,7 @@ import { logout } from './controllers/authController.js';
 import { authMiddleware } from './middlewares/authMiddleware.js';
 import { getUserProfile, getProfileComments, submitProfileComment, followManga, favoriteManga, readingManga, getUserManga } from './controllers/userController.js';
 import "dotenv/config";
+import connectMongo from 'connect-mongo';
 
 
 const app = express();
@@ -38,20 +39,19 @@ app.use(
 );
 
 const sessionOptions = {
-  secret: process.env.SESSION_SECRET,
+  secret: process.env.SESSION_SECRET || 'your-secret-key',
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: process.env.NODE_ENV === 'production', // Ensure cookies are only sent over HTTPS
-    sameSite: 'none', // Necessary for cross-origin use with secure cookies
-    domain: process.env.HTTP_SERVER_DOMAIN,
-    maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+    maxAge: 604800000, // 1 week
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
   },
-  proxy: process.env.NODE_ENV === 'production' // Trust the proxy in production for secure cookies
 };
+
 if (process.env.NODE_ENV !== "development") {
-  sessionOptions.cookie.secure = true; // Ensure cookies are only sent over HTTPS
-  sessionOptions.proxy = true; // Trust the load balancer in production
+  sessionOptions.proxy = true;
+  sessionOptions.cookie.domain = process.env.HTTP_SERVER_DOMAIN;
 }
 
 app.use(session(sessionOptions));
