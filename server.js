@@ -4,6 +4,7 @@ import cors from 'cors';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import mangaRoutes from './routes/mangaRoutes.js';
+import announcementRoutes from './routes/announcementRoutes.js'
 import multer from 'multer';
 import path from 'path';
 import "dotenv/config";
@@ -44,6 +45,7 @@ app.use(express.json());
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/announcements', announcementRoutes);
 app.use('/uploads', express.static(path.join(path.resolve(), 'uploads')));
 app.use('/uploads/profile-pictures', express.static(path.join(path.resolve(), 'uploads', 'profile-pictures')));
 app.use('/api/manga', mangaRoutes);

@@ -33,7 +33,7 @@ router.post('/', authMiddleware, async (req, res) => {
 });
 
 // Update an announcement
-router.put('/:id', authMiddleware, async (req, res) => {
+router.put('/:_id', authMiddleware, async (req, res) => {
     try {
         if (req.user.role !== 'Admin') {
             return res.status(403).json({ message: 'Forbidden' });
@@ -57,7 +57,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
 });
 
 // Delete an announcement
-router.delete('/:id', authMiddleware, async (req, res) => {
+router.delete('/:_id', authMiddleware, async (req, res) => {
     try {
         if (req.user.role !== 'Admin') {
             return res.status(403).json({ message: 'Forbidden' });
