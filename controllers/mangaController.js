@@ -1,6 +1,7 @@
 import Manga from '../models/Manga.js';
 import Review from '../models/Review.js';
 import axios from 'axios';
+
 const API_BASE_URL = 'https://consumet-api-z0sh.onrender.com/meta/anilist-manga';
 
 export const getReviews = async (req, res) => {

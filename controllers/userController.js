@@ -100,7 +100,7 @@ export const updateProfile = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 
-}; 
+};
 
 export const followManga = async (req, res) => {
   try {
@@ -178,14 +178,12 @@ export const unFollowManga = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    if (!user.followedManga.includes(mangaId)) {
-      user.followedManga = user.followedManga.filter(e => e.mangaId  !== mangaId);
-      await user.save();
-    }
+    user.followedManga = user.followedManga.filter((id) => id !== mangaId);
+    await user.save();
 
     res.json({ message: 'Manga unfollowed successfully' });
   } catch (error) {
-    console.error('Error following manga:', error);
+    console.error('Error unfollowing manga:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
@@ -200,14 +198,12 @@ export const unFavoriteManga = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    if (!user.favoriteManga.includes(mangaId)) {
-      user.favoriteManga = user.favoriteManga.filter(e => e.mangaId  !== mangaId);
-      await user.save();
-    }
+    user.favoriteManga = user.favoriteManga.filter((id) => id !== mangaId);
+    await user.save();
 
     res.json({ message: 'Manga unfavorited successfully' });
   } catch (error) {
-    console.error('Error favoriting manga:', error);
+    console.error('Error unfavoriting manga:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
@@ -222,14 +218,12 @@ export const unReadingManga = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    if (!user.readingManga.includes(mangaId)) {
-      user.readingManga = user.readingManga.filter(e => e.mangaId !== mangaId);
-      await user.save();
-    }
+    user.readingManga = user.readingManga.filter((id) => id !== mangaId);
+    await user.save();
 
     res.json({ message: 'Manga removed from reading list' });
   } catch (error) {
-    console.error('Error marking manga as reading:', error);
+    console.error('Error removing manga from reading list:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
