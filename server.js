@@ -12,7 +12,7 @@ import path from 'path';
 import { logout } from './controllers/authController.js';
 import Review from './models/Review.js';
 import { authMiddleware } from './middlewares/authMiddleware.js';
-import { getUserProfile, getProfileComments, submitProfileComment, followManga, favoriteManga, readingManga } from './controllers/userController.js';
+import { getUserProfile, getProfileComments, submitProfileComment, followManga, favoriteManga, readingManga, getUserManga } from './controllers/userController.js';
 
 const app = express();
 const upload = multer({ dest: 'uploads/' });
@@ -70,7 +70,7 @@ app.use('/api/manga', mangaRoutes); // Use manga routes
 app.get('/api/users/profile', authMiddleware, getUserProfile);
 
 // Route for profile picture upload
-app.post('/api/users/profile/picture', upload.single('profilePicture'), async (req, res) => {
+app.post('/api/users/profile/picture', authMiddleware, upload.single('profilePicture'), async (req, res) => {
   try {
     // Handle the uploaded file and update the user's profile picture
     const userId = req.session.currentUser.uniqueId;
@@ -116,6 +116,11 @@ app.get('/api/users/profile/:uniqueId', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+app.get('/api/users/:userId/manga', authMiddleware, getUserManga);
+app.post('/api/users/:userId/follow/:mangaId', authMiddleware, followManga);
+app.post('/api/users/:userId/favorite/:mangaId', authMiddleware, favoriteManga);
+app.post('/api/users/:userId/reading/:mangaId', authMiddleware, readingManga);
+
 app.get('/api/users/profile/:uniqueId/comments', getProfileComments);
 app.post('/api/users/profile/:uniqueId/comments', submitProfileComment);
 // Fetch reviews

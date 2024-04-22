@@ -37,7 +37,13 @@ export const register = async (req, res) => {
 
     res.status(201).json({
       message: 'User registered successfully',
-      user: req.session.currentUser,
+      user: {
+        userId: newUser._id,
+        username: newUser.username,
+        role: newUser.role,
+        profilePicture: newUser.profilePicture || '',
+        uniqueId: newUser.uniqueId,
+      },
     });
   } catch (error) {
     console.error('Error during registration:', error);
@@ -71,7 +77,13 @@ export const login = async (req, res) => {
 
       res.json({
         message: 'Login successful',
-        user: req.session.currentUser,
+        user: {
+          userId: _id,
+          username,
+          role,
+          profilePicture: user.profilePicture,
+          uniqueId,
+        },
       });
     }
   } catch (error) {
