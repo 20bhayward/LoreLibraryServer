@@ -23,27 +23,19 @@ export const register = async (req, res) => {
       username,
       password: hashedPassword,
       role,
-      uniqueId: new mongoose.Types.ObjectId().toString(),
     });
     await newUser.save();
 
     req.session.currentUser = {
-      userId: newUser._id,
+      _id: newUser._id,
       username: newUser.username,
       role: newUser.role,
       profilePicture: newUser.profilePicture || '',
-      uniqueId: newUser.uniqueId,
     };
 
     res.status(201).json({
       message: 'User registered successfully',
-      user: {
-        userId: newUser._id.toString(),
-        username: newUser.username,
-        role: newUser.role,
-        profilePicture: newUser.profilePicture || '',
-        uniqueId: newUser.uniqueId,
-      },
+      user: req.session.currentUser,
     });
   } catch (error) {
     console.error('Error during registration:', error);
@@ -68,22 +60,16 @@ export const login = async (req, res) => {
       const { _id, username, role, profilePicture } = user;
 
       req.session.currentUser = {
-        userId: _id,
+        _id,
         username,
         role,
         profilePicture,
-        uniqueId: user.uniqueId,
       };
 
       res.json({
         message: 'Login successful',
-        user: {
-          userId: _id.toString(),
-          username,
-          role,
-          profilePicture: user.profilePicture,
-          uniqueId,
-        },
+        user: req.session.currentUser,
+        refreshPage: true,
       });
     }
   } catch (error) {

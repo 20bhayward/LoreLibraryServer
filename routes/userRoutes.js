@@ -9,10 +9,10 @@ const router = express.Router();
 router.get('/profile', authMiddleware, getUserProfile);
 router.put('/profile', authMiddleware, upload.single('profilePicture'), updateProfile);
 router.put('/change-password', authMiddleware, changePassword);
-router.get('/:userId/manga', authMiddleware, getUserManga);
-router.post('/:userId/follow/:mangaId', authMiddleware, followManga);
-router.post('/:userId/favorite/:mangaId', authMiddleware, favoriteManga);
-router.post('/:userId/reading/:mangaId', authMiddleware, readingManga);
+router.get('/:_id/manga', authMiddleware, getUserManga);
+router.post('/:_id/follow/:mangaId', authMiddleware, followManga);
+router.post('/:_id/favorite/:mangaId', authMiddleware, favoriteManga);
+router.post('/:_id/reading/:mangaId', authMiddleware, readingManga);
 router.get('/profile/:uniqueId/comments', getProfileComments);
 router.post('/profile/:uniqueId/comments', submitProfileComment);
 

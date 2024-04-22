@@ -9,7 +9,6 @@ const userSchema = new mongoose.Schema({
     default: 'User'
   },
   profilePicture: { type: String, default: '' },
-  uniqueId: { type: String, unique: true, default: () => new mongoose.Types.ObjectId().toString() },
   firstName: { type: String, default: '' },
   lastName: { type: String, default: '' },
   gender: { type: String, default: '' },

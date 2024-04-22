@@ -21,7 +21,7 @@ const upload = multer({ dest: 'uploads/' });
 const allowedOrigins = ['http://localhost:3000', 'https://main--lorelibrary.netlify.app/', 'https://lorelibraryserver.onrender.com', 'https://consumet-api-z0sh.onrender.com', 'https://consumet-api-z0sh.onrender.com/meta/anilist/']; // Add your React app's origin(s) here
 
 // Connect to MongoDB
-mongoose.connect('mongodb+srv://20bhayward:LoreMaster@lorelibrarydata.tbi2ztc.mongodb.net/?retryWrites=true&w=majority&appName=LoreLibraryData');
+mongoose.connect(process.env.DB_CONNECTION_STRING || 'mongodb+srv://20bhayward:LoreMaster@lorelibrarydata.tbi2ztc.mongodb.net/');
 
 app.use(
   cors({
@@ -47,12 +47,15 @@ const sessionOptions = {
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+  },
 };
 if (process.env.NODE_ENV !== "development") {
   sessionOptions.proxy = true;
   sessionOptions.cookie = {
       sameSite: "none",
-      secure: true,
       domain: process.env.HTTP_SERVER_DOMAIN,
   };
 }
@@ -73,7 +76,7 @@ app.get('/api/users/profile', authMiddleware, getUserProfile);
 app.post('/api/users/profile/picture', authMiddleware, upload.single('profilePicture'), async (req, res) => {
   try {
     // Handle the uploaded file and update the user's profile picture
-    const userId = req.session.currentUser.uniqueId;
+    const userId = req.session.currentUser._id;
     const filePath = req.file.path;
 
     // Update the user's profile picture in the database
@@ -116,13 +119,13 @@ app.get('/api/users/profile/:uniqueId', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-app.get('/api/users/:userId/manga', authMiddleware, getUserManga);
-app.post('/api/users/:userId/follow/:mangaId', authMiddleware, followManga);
-app.post('/api/users/:userId/favorite/:mangaId', authMiddleware, favoriteManga);
-app.post('/api/users/:userId/reading/:mangaId', authMiddleware, readingManga);
+app.get('/api/users/:_id/manga', authMiddleware, getUserManga);
+app.post('/api/users/:_id/follow/:mangaId', authMiddleware, followManga);
+app.post('/api/users/:_id/favorite/:mangaId', authMiddleware, favoriteManga);
+app.post('/api/users/:_id/reading/:mangaId', authMiddleware, readingManga);
 
-app.get('/api/users/profile/:uniqueId/comments', getProfileComments);
-app.post('/api/users/profile/:uniqueId/comments', submitProfileComment);
+app.get('/api/users/profile/:_id/comments', getProfileComments);
+app.post('/api/users/profile/:_id/comments', submitProfileComment);
 // Fetch reviews
 app.get('/api/manga/:mangaId/reviews', async (req, res) => {
   try {
