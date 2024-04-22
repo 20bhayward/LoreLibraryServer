@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 const mangaSchema = new mongoose.Schema({
   id: { type: String, required: true, unique: true, default: () => new mongoose.Types.ObjectId().toString()},
   title: { type: String, required: true },
-  altTitles: [{ type: String , requied: true}],
+  altTitles: { type: [String], required: true },
   malId: { type: Number, required: true },
   trailer: {
     id: { type: String },
