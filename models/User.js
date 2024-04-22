@@ -13,9 +13,9 @@ const userSchema = new mongoose.Schema({
   lastName: { type: String, default: '' },
   gender: { type: String, default: '' },
   location: { type: String, default: '' },
-  followedManga: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Manga' }],
-  favoriteManga: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Manga' }],
-  readingManga: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Manga' }],
+  followedManga: [{ type: String }],
+  favoriteManga: [{ type: String }],
+  readingManga: [{ type: String }],
 });
 
 export default mongoose.model('User', userSchema);

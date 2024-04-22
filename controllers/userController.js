@@ -101,6 +101,7 @@ export const updateProfile = async (req, res) => {
   }
 
 }; 
+
 export const followManga = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -111,10 +112,8 @@ export const followManga = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const mangaObjectId = new mongoose.Types.ObjectId(mangaId);
-
-    if (!user.followedManga.includes(mangaObjectId)) {
-      user.followedManga.push(mangaObjectId);
+    if (!user.followedManga.includes(mangaId)) {
+      user.followedManga.push(mangaId);
       await user.save();
     }
 
@@ -135,10 +134,8 @@ export const favoriteManga = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const mangaObjectId = new mongoose.Types.ObjectId(mangaId);
-
-    if (!user.favoriteManga.includes(mangaObjectId)) {
-      user.favoriteManga.push(mangaObjectId);
+    if (!user.favoriteManga.includes(mangaId)) {
+      user.favoriteManga.push(mangaId);
       await user.save();
     }
 
@@ -159,10 +156,8 @@ export const readingManga = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const mangaObjectId = new mongoose.Types.ObjectId(mangaId);
-
-    if (!user.readingManga.includes(mangaObjectId)) {
-      user.readingManga.push(mangaObjectId);
+    if (!user.readingManga.includes(mangaId)) {
+      user.readingManga.push(mangaId);
       await user.save();
     }
 
