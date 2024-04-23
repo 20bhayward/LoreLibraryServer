@@ -8,7 +8,10 @@ const router = express.Router();
 // Get all announcements
 router.get('/', async (req, res) => {
     try {
-        const announcements = await Announcement.find().sort({ createdAt: -1 });
+        const announcements = await Announcement.find()
+            .sort({ createdAt: -1 })
+            .populate('createdBy', 'username profilePicture')
+            .populate('updatedBy', 'username');
         res.json(announcements);
     } catch (error) {
         console.error('Error fetching announcements:', error);
@@ -23,8 +26,12 @@ router.post('/', authMiddleware, async (req, res) => {
             return res.status(403).json({ message: 'Forbidden' });
         }
 
-        const newAnnouncement = new Announcement(req.body);
+        const newAnnouncement = new Announcement({
+            ...req.body,
+            createdBy: req.user._id,
+        });
         const savedAnnouncement = await newAnnouncement.save();
+        await savedAnnouncement.populate('createdBy', 'username profilePicture');
         res.status(201).json(savedAnnouncement);
     } catch (error) {
         console.error('Error creating announcement:', error);
@@ -41,9 +48,15 @@ router.put('/:_id', authMiddleware, async (req, res) => {
 
         const updatedAnnouncement = await Announcement.findByIdAndUpdate(
             req.params._id,
-            { ...req.body, updatedAt: Date.now() },
+            {
+                ...req.body,
+                updatedAt: Date.now(),
+                updatedBy: req.user._id,
+            },
             { new: true }
-        );
+        )
+            .populate('createdBy', 'username profilePicture')
+            .populate('updatedBy', 'username');
 
         if (!updatedAnnouncement) {
             return res.status(404).json({ message: 'Announcement not found' });
@@ -55,6 +68,7 @@ router.put('/:_id', authMiddleware, async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 });
+
 
 // Delete an announcement
 router.delete('/:_id', authMiddleware, async (req, res) => {
