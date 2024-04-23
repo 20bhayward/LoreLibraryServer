@@ -90,4 +90,30 @@ router.delete('/:_id', authMiddleware, async (req, res) => {
     }
 });
 
+// Pin an announcement
+router.put('/:_id/pin', authMiddleware, async (req, res) => {
+    try {
+        if (req.user.role !== 'Admin') {
+            return res.status(403).json({ message: 'Forbidden' });
+        }
+
+        const pinnedAnnouncement = await Announcement.findByIdAndUpdate(
+            req.params._id,
+            { pinned: true },
+            { new: true }
+        )
+            .populate('createdBy', 'username profilePicture')
+            .populate('updatedBy', 'username');
+
+        if (!pinnedAnnouncement) {
+            return res.status(404).json({ message: 'Announcement not found' });
+        }
+
+        res.json(pinnedAnnouncement);
+    } catch (error) {
+        console.error('Error pinning announcement:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
 export default router;
