@@ -17,7 +17,7 @@ router.post('/:_id/reading/:mangaId', authMiddleware, readingManga);
 router.post('/:_id/unfollow/:mangaId', authMiddleware, unFollowManga);
 router.post('/:_id/unfavorite/:mangaId', authMiddleware, unFavoriteManga);
 router.post('/:_id/unreading/:mangaId', authMiddleware, unReadingManga);
-router.get('/profile/:_id/comments', getProfileComments);
-router.post('/profile/:_id/comments', submitProfileComment);
+router.get('/profile/:_id/comments', authMiddleware, getProfileComments);
+router.post('/profile/:_id/comments', authMiddleware, submitProfileComment);
 
 export default router;
