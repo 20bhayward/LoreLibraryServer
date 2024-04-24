@@ -108,14 +108,14 @@ const createBareManga = async (id, title, image) => {
       id: mangaId,
       title: title || '',
       image: image,
-      altTitles: [],
+      altTitles: ["Alt"],
       malId: 0,
       popularity: 0,
-      description: '',
-      status: '',
+      description: "Several hundred years ago",
+      status: "Completed",
       rating: 0,
-      genres: [],
-      type: '',
+      genres: ["Action"],
+      type: "TV",
     });
     await newManga.save();
     console.log('New manga created:', newManga);
