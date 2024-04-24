@@ -108,7 +108,6 @@ const createBareManga = async (id, title, image) => {
       id,
       title,
       image,
-      // Set default values for required fields
       altTitles: [],
       malId: 0,
       popularity: 0,
@@ -149,7 +148,7 @@ export const followManga = async (req, res) => {
 
       if (!existingManga) {
         console.log('Manga does not exist, creating new entry:', mangaId);
-        await createBareManga(mangaId, title, image);
+        await createBareManga(mangaId, title.english, image);
       } else {
         console.log('Manga already exists:', mangaId);
       }
@@ -188,7 +187,7 @@ export const favoriteManga = async (req, res) => {
 
       if (!existingManga) {
         console.log('Manga does not exist, creating new entry:', mangaId);
-        await createBareManga(mangaId, title, image);
+        await createBareManga(mangaId, title.english, image);
       } else {
         console.log('Manga already exists:', mangaId);
       }
@@ -227,7 +226,7 @@ export const readingManga = async (req, res) => {
 
       if (!existingManga) {
         console.log('Manga does not exist, creating new entry:', mangaId);
-        await createBareManga(mangaId, title, image);
+        await createBareManga(mangaId, title.english, image);
       } else {
         console.log('Manga already exists:', mangaId);
       }
@@ -330,9 +329,9 @@ export const getUserManga = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const followedManga = await Manga.findOne({ id: { $in: user.followedManga } });
-    const favoriteManga = await Manga.findOne({ id: { $in: user.favoriteManga } });
-    const readingManga = await Manga.findOne({ id: { $in: user.readingManga } });
+    const followedManga = await Manga.findOne({ _id: { $in: user.followedManga } });
+    const favoriteManga = await Manga.findOne({ _id: { $in: user.favoriteManga } });
+    const readingManga = await Manga.findOne({ _id: { $in: user.readingManga } });
 
     res.json({
       followedManga,
