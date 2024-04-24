@@ -309,9 +309,9 @@ export const getUserManga = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const followedManga = await Manga.find({ id: { $in: user.followedManga } });
-    const favoriteManga = await Manga.find({ id: { $in: user.favoriteManga } });
-    const readingManga = await Manga.find({ id: { $in: user.readingManga } });
+    const followedManga = await Manga.find({ _id: { $in: user.followedManga } });
+    const favoriteManga = await Manga.find({ _id: { $in: user.favoriteManga } });
+    const readingManga = await Manga.find({ _id: { $in: user.readingManga } });
 
     res.json({
       followedManga,
