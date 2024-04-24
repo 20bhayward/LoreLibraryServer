@@ -104,12 +104,17 @@ export const updateProfile = async (req, res) => {
 
 const saveMangaDetails = async (mangaData) => {
   try {
+    const altTitles = [];
+    if (mangaData.title.romaji) altTitles.push(mangaData.title.romaji);
+    if (mangaData.title.english) altTitles.push(mangaData.title.english);
+    if (mangaData.title.native) altTitles.push(mangaData.title.native);
+
     const manga = await Manga.findOneAndUpdate(
       { id: mangaData.id },
       {
         id: mangaData.id,
         title: mangaData.title.romaji || mangaData.title.english || mangaData.title.native,
-        altTitles: mangaData.title,
+        altTitles: altTitles,
         malId: mangaData.malId,
         image: mangaData.image,
         popularity: mangaData.popularity,
