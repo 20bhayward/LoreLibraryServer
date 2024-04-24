@@ -148,6 +148,33 @@ export const followManga = async (req, res) => {
       user.followedManga.push(mangaId);
       await user.save();
 
+
+      // Check if the manga already exists in the Manga collection
+      const existingManga = await Manga.findOne({ id: mangaId });
+
+      if (!existingManga) {
+        // If the manga doesn't exist, create a new entry
+        await Manga.create({
+          id: mangaId,
+          title: mangaData.title.romaji || mangaData.title.english || mangaData.title.native,
+          altTitles: mangaData.title,
+          malId: mangaData.malId,
+          image: mangaData.image,
+          popularity: mangaData.popularity,
+          color: mangaData.color,
+          description: mangaData.description,
+          status: mangaData.status,
+          releaseDate: mangaData.releaseDate,
+          startDate: mangaData.startDate,
+          endDate: mangaData.endDate,
+          rating: mangaData.rating,
+          genres: mangaData.genres,
+          season: mangaData.season,
+          studios: mangaData.studios,
+          type: mangaData.type,
+        });
+      }
+    } else {
       // Save the manga details in the Manga collection
       await Manga.findOneAndUpdate(
         { id: mangaData.id },
@@ -173,6 +200,8 @@ export const followManga = async (req, res) => {
         { upsert: true, new: true }
       );
     }
+
+
     res.json({ message: 'Manga followed successfully' });
   } catch (error) {
     console.error('Error following manga:', error);
@@ -194,8 +223,56 @@ export const favoriteManga = async (req, res) => {
       user.favoriteManga.push(mangaId);
       await user.save();
 
-       // Save the manga details in the Manga collection
-       await saveMangaDetails(mangaData);
+      // Check if the manga already exists in the Manga collection
+      const existingManga = await Manga.findOne({ id: mangaId });
+
+      if (!existingManga) {
+        // If the manga doesn't exist, create a new entry
+        await Manga.create({
+          id: mangaId,
+          title: mangaData.title.romaji || mangaData.title.english || mangaData.title.native,
+          altTitles: mangaData.title,
+          malId: mangaData.malId,
+          image: mangaData.image,
+          popularity: mangaData.popularity,
+          color: mangaData.color,
+          description: mangaData.description,
+          status: mangaData.status,
+          releaseDate: mangaData.releaseDate,
+          startDate: mangaData.startDate,
+          endDate: mangaData.endDate,
+          rating: mangaData.rating,
+          genres: mangaData.genres,
+          season: mangaData.season,
+          studios: mangaData.studios,
+          type: mangaData.type,
+        });
+      }
+    } else {
+      // Save the manga details in the Manga collection
+      await Manga.findOneAndUpdate(
+        { id: mangaData.id },
+        {
+          id: mangaData.id,
+          title: mangaData.title.romaji || mangaData.title.english || mangaData.title.native,
+          altTitles: mangaData.title,
+          malId: mangaData.malId,
+          image: mangaData.image,
+          popularity: mangaData.popularity,
+          color: mangaData.color,
+          description: mangaData.description,
+          status: mangaData.status,
+          releaseDate: mangaData.releaseDate,
+          startDate: mangaData.startDate,
+          endDate: mangaData.endDate,
+          rating: mangaData.rating,
+          genres: mangaData.genres,
+          season: mangaData.season,
+          studios: mangaData.studios,
+          type: mangaData.type,
+        },
+        { upsert: true, new: true }
+      );
     }
     res.json({ message: 'Manga favorited successfully' });
   } catch (error) {
@@ -217,8 +294,56 @@ export const readingManga = async (req, res) => {
       user.readingManga.push(mangaId);
       await user.save();
 
-       // Save the manga details in the Manga collection
-       await saveMangaDetails(mangaData);
+      // Check if the manga already exists in the Manga collection
+      const existingManga = await Manga.findOne({ id: mangaId });
+
+      if (!existingManga) {
+        // If the manga doesn't exist, create a new entry
+        await Manga.create({
+          id: mangaId,
+          title: mangaData.title.romaji || mangaData.title.english || mangaData.title.native,
+          altTitles: mangaData.title,
+          malId: mangaData.malId,
+          image: mangaData.image,
+          popularity: mangaData.popularity,
+          color: mangaData.color,
+          description: mangaData.description,
+          status: mangaData.status,
+          releaseDate: mangaData.releaseDate,
+          startDate: mangaData.startDate,
+          endDate: mangaData.endDate,
+          rating: mangaData.rating,
+          genres: mangaData.genres,
+          season: mangaData.season,
+          studios: mangaData.studios,
+          type: mangaData.type,
+        });
+      }
+    } else {
+      // Save the manga details in the Manga collection
+      await Manga.findOneAndUpdate(
+        { id: mangaData.id },
+        {
+          id: mangaData.id,
+          title: mangaData.title.romaji || mangaData.title.english || mangaData.title.native,
+          altTitles: mangaData.title,
+          malId: mangaData.malId,
+          image: mangaData.image,
+          popularity: mangaData.popularity,
+          color: mangaData.color,
+          description: mangaData.description,
+          status: mangaData.status,
+          releaseDate: mangaData.releaseDate,
+          startDate: mangaData.startDate,
+          endDate: mangaData.endDate,
+          rating: mangaData.rating,
+          genres: mangaData.genres,
+          season: mangaData.season,
+          studios: mangaData.studios,
+          type: mangaData.type,
+        },
+        { upsert: true, new: true }
+      );
     }
     res.json({ message: 'Manga added to reading list' });
   } catch (error) {
