@@ -76,3 +76,28 @@ const mangaSchema = new mongoose.Schema({
 });
 
 export default mongoose.model('Manga', mangaSchema);
+
+// Function to create a new Manga document with only the essential fields
+const createBareManga = async (id, title, image) => {
+  try {
+    const newManga = new Manga({
+      id,
+      title,
+      image,
+      // Set default values for required fields
+      altTitles: [],
+      malId: 0,
+      popularity: 0,
+      description: '',
+      status: '',
+      rating: 0,
+      genres: [],
+      type: '',
+    });
+
+    await newManga.save();
+    console.log('New manga created:', newManga);
+  } catch (error) {
+    console.error('Error creating new manga:', error);
+  }
+};

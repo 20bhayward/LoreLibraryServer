@@ -101,22 +101,27 @@ export const updateProfile = async (req, res) => {
   }
 
 };
-const saveMangaDetails = async (mangaData) => {
+
+const createBareManga = async (id, title, image) => {
   try {
-    const existingManga = await Manga.findOne({ id: mangaData.id });
-    if (existingManga) {
-      console.log('Manga already exists, updating:', mangaData.id);
-      await Manga.updateOne({ id: mangaData.id }, mangaData);
-      return existingManga;
-    } else {
-      console.log('Manga does not exist, creating new entry:', mangaData.id);
-      const manga = new Manga(mangaData);
-      await manga.save();
-      return manga;
-    }
+    const newManga = new Manga({
+      id,
+      title,
+      image,
+      // Set default values for required fields
+      altTitles: [],
+      malId: 0,
+      popularity: 0,
+      description: '',
+      status: '',
+      rating: 0,
+      genres: [],
+      type: '',
+    });
+    await newManga.save();
+    console.log('New manga created:', newManga);
   } catch (error) {
-    console.error('Error saving manga details:', error);
-    throw error;
+    console.error('Error creating new manga:', error);
   }
 };
 
@@ -124,7 +129,7 @@ export const followManga = async (req, res) => {
   try {
     const userId = req.user._id;
     const mangaId = req.params.mangaId;
-    const mangaData = req.body;
+    const { title, image } = req.body;
 
     console.log('Following manga:', mangaId, 'for user:', userId);
 
@@ -144,7 +149,7 @@ export const followManga = async (req, res) => {
 
       if (!existingManga) {
         console.log('Manga does not exist, creating new entry:', mangaId);
-        await saveMangaDetails(mangaData);
+        await createBareManga(mangaId, title, image);
       } else {
         console.log('Manga already exists:', mangaId);
       }
@@ -163,7 +168,7 @@ export const favoriteManga = async (req, res) => {
   try {
     const userId = req.user._id;
     const mangaId = req.params.mangaId;
-    const mangaData = req.body;
+    const { title, image } = req.body;
 
     console.log('Favoriting manga:', mangaId, 'for user:', userId);
 
@@ -183,7 +188,7 @@ export const favoriteManga = async (req, res) => {
 
       if (!existingManga) {
         console.log('Manga does not exist, creating new entry:', mangaId);
-        await saveMangaDetails(mangaData);
+        await createBareManga(mangaId, title, image);
       } else {
         console.log('Manga already exists:', mangaId);
       }
@@ -202,7 +207,7 @@ export const readingManga = async (req, res) => {
   try {
     const userId = req.user._id;
     const mangaId = req.params.mangaId;
-    const mangaData = req.body;
+    const { title, image } = req.body;
 
     console.log('Adding manga to reading list:', mangaId, 'for user:', userId);
 
@@ -222,7 +227,7 @@ export const readingManga = async (req, res) => {
 
       if (!existingManga) {
         console.log('Manga does not exist, creating new entry:', mangaId);
-        await saveMangaDetails(mangaData);
+        await createBareManga(mangaId, title, image);
       } else {
         console.log('Manga already exists:', mangaId);
       }
