@@ -8,9 +8,6 @@ const router = express.Router();
 // Get all announcements
 router.get('/', async (req, res) => {
     try {
-        if (req.user.role !== 'Admin') {
-            return res.status(403).json({ message: 'Forbidden' });
-        }
         const announcements = await Announcement.find()
             .sort({ createdAt: -1 })
             .populate('createdBy', 'username profilePicture')
