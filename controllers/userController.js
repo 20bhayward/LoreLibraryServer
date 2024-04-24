@@ -104,22 +104,17 @@ export const updateProfile = async (req, res) => {
 
 const saveMangaDetails = async (mangaData) => {
   try {
-    const manga = new Manga({
-      id: mangaData.id,
-      title: mangaData.title.romaji || mangaData.title.english || mangaData.title.native,
-      altTitles: mangaData.title,
-      malId: mangaData.malId,
-      image: mangaData.image,
-      popularity: mangaData.popularity,
-      description: mangaData.description,
-      status: mangaData.status,
-      endDate: mangaData.endDate,
-      rating: mangaData.rating,
-      genres: mangaData.genres,
-      type: mangaData.type,
-    });
-    await manga.save();
-    return manga;
+    const existingManga = await Manga.findOne({ id: mangaData.id });
+    if (existingManga) {
+      // If the manga already exists, update the document
+      await Manga.updateOne({ id: mangaData.id }, mangaData);
+      return existingManga;
+    } else {
+      // If the manga doesn't exist, create a new document
+      const manga = new Manga(mangaData);
+      await manga.save();
+      return manga;
+    }
   } catch (error) {
     console.error('Error saving manga details:', error);
     throw error;
@@ -309,9 +304,9 @@ export const getUserManga = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const followedManga = await Manga.find({ _id: { $in: user.followedManga } });
-    const favoriteManga = await Manga.find({ _id: { $in: user.favoriteManga } });
-    const readingManga = await Manga.find({ _id: { $in: user.readingManga } });
+    const followedManga = await Manga.findOneById({ _id: { $in: user.followedManga } });
+    const favoriteManga = await Manga.findOneById({ _id: { $in: user.favoriteManga } });
+    const readingManga = await Manga.findOneById({ _id: { $in: user.readingManga } });
 
     res.json({
       followedManga,
