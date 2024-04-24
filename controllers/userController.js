@@ -105,7 +105,7 @@ export const updateProfile = async (req, res) => {
 const createBareManga = async (id, title, image) => {
   try {
     const newManga = new Manga({
-      id: mangaId,
+      id: id,
       title: title || '',
       image: image,
       altTitles: ["Alt"],
