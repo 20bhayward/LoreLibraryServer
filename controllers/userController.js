@@ -154,7 +154,7 @@ export const followManga = async (req, res) => {
 
       if (!existingManga) {
         // If the manga doesn't exist, create a new entry
-        await Manga.create({
+        const newManga = new Manga({
           id: mangaId,
           title: mangaData.title.romaji || mangaData.title.english || mangaData.title.native,
           altTitles: mangaData.title,
@@ -173,6 +173,8 @@ export const followManga = async (req, res) => {
           studios: mangaData.studios,
           type: mangaData.type,
         });
+
+        const savedManga = await newManga.save()
       }
     } else {
       // Save the manga details in the Manga collection
