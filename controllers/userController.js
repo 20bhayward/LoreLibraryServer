@@ -104,17 +104,12 @@ export const updateProfile = async (req, res) => {
 
 const saveMangaDetails = async (mangaData) => {
   try {
-    const altTitles = [];
-    if (mangaData.title.romaji) altTitles.push(mangaData.title.romaji);
-    if (mangaData.title.english) altTitles.push(mangaData.title.english);
-    if (mangaData.title.native) altTitles.push(mangaData.title.native);
-
     const manga = await Manga.findOneAndUpdate(
       { id: mangaData.id },
       {
         id: mangaData.id,
         title: mangaData.title.romaji || mangaData.title.english || mangaData.title.native,
-        altTitles: altTitles,
+        altTitles: mangaData.title,
         malId: mangaData.malId,
         image: mangaData.image,
         popularity: mangaData.popularity,
@@ -154,7 +149,29 @@ export const followManga = async (req, res) => {
       await user.save();
 
       // Save the manga details in the Manga collection
-      await saveMangaDetails(mangaData);
+      await Manga.findOneAndUpdate(
+        { id: mangaData.id },
+        {
+          id: mangaData.id,
+          title: mangaData.title.romaji || mangaData.title.english || mangaData.title.native,
+          altTitles: mangaData.title,
+          malId: mangaData.malId,
+          image: mangaData.image,
+          popularity: mangaData.popularity,
+          color: mangaData.color,
+          description: mangaData.description,
+          status: mangaData.status,
+          releaseDate: mangaData.releaseDate,
+          startDate: mangaData.startDate,
+          endDate: mangaData.endDate,
+          rating: mangaData.rating,
+          genres: mangaData.genres,
+          season: mangaData.season,
+          studios: mangaData.studios,
+          type: mangaData.type,
+        },
+        { upsert: true, new: true }
+      );
     }
     res.json({ message: 'Manga followed successfully' });
   } catch (error) {
@@ -163,6 +180,7 @@ export const followManga = async (req, res) => {
   }
 };
 
+// Similar changes for favoriteManga and readingManga functions
 export const favoriteManga = async (req, res) => {
   try {
     const userId = req.user._id;
