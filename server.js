@@ -17,7 +17,8 @@ const upload = multer({ dest: 'uploads/' });
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:5000',
-  'https://main--lorelibrary.netlify.app/',
+  'https://main--lorelibrary.netlify.app',
+  'https:/lorelibrary.netlify.app',
   'https://lorelibraryserver.onrender.com',
   'https://consumet-api-z0sh.onrender.com',
   'https://consumet-api-z0sh.onrender.com/meta/anilist/popular?provider=mangareader',
