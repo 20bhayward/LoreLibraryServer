@@ -320,6 +320,8 @@ export const submitProfileComment = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+
 export const getUserManga = async (req, res) => {
   try {
     const userId = req.params._id;
@@ -328,14 +330,31 @@ export const getUserManga = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const followedManga = user.followedManga.length == 0 ? [] : user.followedManga;
-    const favoriteManga = user.favoriteManga.length == 0 ? [] : user.favoriteManga;
-    const readingManga = user.readingManga.length == 0 ? [] : user.readingManga;
+    const followedMangaDetails = await Promise.all(
+      user.followedManga.map(async (mangaId) => {
+        const manga = await Manga.findOne({ id: mangaId });
+        return manga;
+      })
+    );
+
+    const favoriteMangaDetails = await Promise.all(
+      user.favoriteManga.map(async (mangaId) => {
+        const manga = await Manga.findOne({ id: mangaId });
+        return manga;
+      })
+    );
+
+    const readingMangaDetails = await Promise.all(
+      user.readingManga.map(async (mangaId) => {
+        const manga = await Manga.findOne({ id: mangaId });
+        return manga;
+      })
+    );
 
     res.json({
-      followedManga,
-      favoriteManga,
-      readingManga,
+      followedManga: followedMangaDetails,
+      favoriteManga: favoriteMangaDetails,
+      readingManga: readingMangaDetails,
     });
   } catch (error) {
     console.error('Error fetching user manga:', error);
